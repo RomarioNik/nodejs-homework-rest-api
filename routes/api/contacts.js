@@ -1,84 +1,27 @@
 import express from "express";
-import Joi from "joi";
 
-import contactsService from "../../models/contacts.js";
-
-const contactsSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-});
+import contactsControllers from "../../controllers/contacts-controllers.js";
+import schemas from "../../schemas/contacts-schemas.js";
+import { validateBody } from "../../decorators/index.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", async (req, res, next) => {
-  try {
-    const contacts = await contactsService.listContacts();
-    res.json(contacts);
-  } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-    });
-  }
-});
+contactsRouter.get("/", contactsControllers.getAll);
 
-contactsRouter.get("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const contact = await contactsService.getById(id);
-    if (!contact) throw error;
-    res.json(contact);
-  } catch (error) {
-    res.status(404).json({
-      message: "Not found",
-    });
-  }
-});
+contactsRouter.get("/:id", contactsControllers.getById);
 
-contactsRouter.post("/", async (req, res, next) => {
-  try {
-    const { error } = contactsSchema.validate(req.body);
-    if (error) throw error;
-    const contact = await contactsService.addContact(req.body);
-    res.status(201).json(contact);
-  } catch (error) {
-    res.status(400).json({
-      message: "missing required name field",
-    });
-  }
-});
+contactsRouter.post(
+  "/",
+  validateBody(schemas.contactsSchema),
+  contactsControllers.add
+);
 
-contactsRouter.delete("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const contact = await contactsService.removeContact(id);
-    if (!contact) throw error;
-    res.status(200).json({
-      message: "contact deleted",
-    });
-  } catch (error) {
-    res.status(404).json({
-      message: "NOt found",
-    });
-  }
-});
+contactsRouter.delete("/:id", contactsControllers.deleteById);
 
-contactsRouter.put("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { error } = contactsSchema.validate(req.body);
-    if (error)
-      throw res.status(400).json({
-        message: "missing fields",
-      });
-    const contact = await contactsService.updateContact(id, req.body);
-    if (!contact) throw error;
-    res.json(contact);
-  } catch (error) {
-    res.status(404).json({
-      message: "Not found",
-    });
-  }
-});
+contactsRouter.put(
+  "/:id",
+  validateBody(schemas.contactsSchema),
+  contactsControllers.updateById
+);
 
 export default contactsRouter;
