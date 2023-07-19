@@ -1,25 +1,27 @@
-const express = require('express')
+import express from "express";
 
-const router = express.Router()
+import contactsControllers from "../../controllers/contacts-controllers.js";
+import schemas from "../../schemas/contacts-schemas.js";
+import { validateBody } from "../../decorators/index.js";
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+const contactsRouter = express.Router();
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.get("/", contactsControllers.getAll);
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.get("/:id", contactsControllers.getById);
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.post(
+  "/",
+  validateBody(schemas.contactsSchema),
+  contactsControllers.add
+);
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.delete("/:id", contactsControllers.deleteById);
 
-module.exports = router
+contactsRouter.put(
+  "/:id",
+  validateBody(schemas.contactsSchema),
+  contactsControllers.updateById
+);
+
+export default contactsRouter;
