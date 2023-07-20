@@ -1,27 +1,27 @@
-import contactsService from "../models/contacts.js";
 import { HttpError } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
+import { Contact } from "../models/contact.js";
 
 const getAll = async (req, res) => {
-  const contacts = await contactsService.listContacts();
+  const contacts = await Contact.find();
   res.json(contacts);
 };
 
 const getById = async (req, res) => {
   const { id } = req.params;
-  const contact = await contactsService.getById(id);
+  const contact = await Contact.findById(id);
   if (!contact) throw HttpError(404);
   res.json(contact);
 };
 
 const add = async (req, res) => {
-  const contact = await contactsService.addContact(req.body);
+  const contact = await Contact.create(req.body);
   res.status(201).json(contact);
 };
 
 const deleteById = async (req, res) => {
   const { id } = req.params;
-  const contact = await contactsService.removeContact(id);
+  const contact = await Contact.findByIdAndRemove(id);
   if (!contact) throw HttpError(404);
 
   res.status(200).json({
@@ -31,8 +31,18 @@ const deleteById = async (req, res) => {
 
 const updateById = async (req, res) => {
   const { id } = req.params;
-  const contact = await contactsService.updateContact(id, req.body);
+  const contact = await Contact.findByIdAndUpdate(id, req.body, { new: true });
   if (!contact) throw HttpError(404);
+  res.json(contact);
+};
+
+const updateStatusContact = async (req, res) => {
+  const { id } = req.params;
+  if (!req.body) throw HttpError(400, "missing field favorite");
+
+  const contact = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+  if (!contact) throw HttpError(404);
+
   res.json(contact);
 };
 
@@ -42,4 +52,5 @@ export default {
   add: ctrlWrapper(add),
   deleteById: ctrlWrapper(deleteById),
   updateById: ctrlWrapper(updateById),
+  updateStatusContact: ctrlWrapper(updateStatusContact),
 };
