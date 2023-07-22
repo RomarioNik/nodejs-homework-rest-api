@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
 import { handleMongooseError } from "../helpers/index.js";
+import { validateAtUpdate } from "../helpers/index.js";
 
 const emailRegexp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const phoneRegexp =
@@ -32,7 +33,10 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
+contactSchema.pre("findOneAndUpdate", validateAtUpdate)
+
 contactSchema.post("save", handleMongooseError);
+contactSchema.post("findOneAndUpdate", handleMongooseError);
 
 const addSchema = Joi.object({
   name: Joi.string().required(),
