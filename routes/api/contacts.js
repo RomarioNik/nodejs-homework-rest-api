@@ -2,6 +2,7 @@ import express from "express";
 import { schemas } from "../../models/contact.js";
 import { validateBody } from "../../decorators/index.js";
 import { isValidId } from "../../middlewares/index.js";
+import { authenticate } from "../../middlewares/index.js";
 import {
   getAllContacts,
   getContactById,
@@ -13,16 +14,22 @@ import {
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.get("/", authenticate, getAllContacts);
 
-contactsRouter.get("/:id", isValidId, getContactById);
+contactsRouter.get("/:id", authenticate, isValidId, getContactById);
 
-contactsRouter.post("/", validateBody(schemas.addSchema), addContact);
+contactsRouter.post(
+  "/",
+  authenticate,
+  validateBody(schemas.addSchema),
+  addContact
+);
 
-contactsRouter.delete("/:id", isValidId, deleteContactById);
+contactsRouter.delete("/:id", authenticate, isValidId, deleteContactById);
 
 contactsRouter.put(
   "/:id",
+  authenticate,
   isValidId,
   validateBody(schemas.addSchema),
   updateContactById
@@ -30,6 +37,7 @@ contactsRouter.put(
 
 contactsRouter.patch(
   "/:id/favorite",
+  authenticate,
   isValidId,
   validateBody(schemas.updateStatusContactSchema),
   updateStatusContact
