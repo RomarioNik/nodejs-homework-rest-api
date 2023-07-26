@@ -5,10 +5,10 @@ import { User } from "../models/user.js";
 const { SECRET_KEY } = process.env;
 
 const authenticate = async (req, res, next) => {
-  const { authorization } = req.headers;
-  if (!authorization) throw next(HttpError(401));
+  const { authorization = "" } = req.headers;
+  const [bearer, token] = authorization.split(" ");
 
-  const token = authorization.split(" ")[1];
+  if (bearer !== "Bearer") throw next(HttpError(401));
 
   try {
     const { id } = jwt.verify(token, SECRET_KEY);
