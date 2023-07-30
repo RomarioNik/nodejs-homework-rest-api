@@ -13,23 +13,18 @@ import {
 } from "../../controllers/contacts/index.js";
 
 const contactsRouter = express.Router();
+contactsRouter.use(authenticate);
 
-contactsRouter.get("/", authenticate, getAllContacts);
+contactsRouter.get("/", getAllContacts);
 
-contactsRouter.get("/:id", authenticate, isValidId, getContactById);
+contactsRouter.get("/:id", isValidId, getContactById);
 
-contactsRouter.post(
-  "/",
-  authenticate,
-  validateBody(schemas.addSchema),
-  addContact
-);
+contactsRouter.post("/", validateBody(schemas.addSchema), addContact);
 
-contactsRouter.delete("/:id", authenticate, isValidId, deleteContactById);
+contactsRouter.delete("/:id", isValidId, deleteContactById);
 
 contactsRouter.put(
   "/:id",
-  authenticate,
   isValidId,
   validateBody(schemas.addSchema),
   updateContactById
@@ -37,7 +32,6 @@ contactsRouter.put(
 
 contactsRouter.patch(
   "/:id/favorite",
-  authenticate,
   isValidId,
   validateBody(schemas.updateStatusContactSchema),
   updateStatusContact

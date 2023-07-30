@@ -2,7 +2,7 @@ import { HttpError } from "../../helpers/index.js";
 import { ctrlWrapper } from "../../decorators/index.js";
 import { Contact } from "../../models/contact.js";
 
-const deleteById = async (req, res) => {
+const deleteContactById = async (req, res) => {
   const { id } = req.params;
   const contact = await Contact.findByIdAndRemove(id);
   if (!contact) throw HttpError(404);
@@ -12,4 +12,4 @@ const deleteById = async (req, res) => {
   });
 };
 
-export const deleteContactById = ctrlWrapper(deleteById);
+export default ctrlWrapper(deleteContactById);
