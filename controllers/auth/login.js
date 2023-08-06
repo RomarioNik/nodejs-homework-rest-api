@@ -6,7 +6,7 @@ import { ctrlWrapper } from "../../decorators/index.js";
 
 const { SECRET_KEY } = process.env;
 
-const signIn = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -30,4 +30,4 @@ const signIn = async (req, res) => {
   });
 };
 
-export const login = ctrlWrapper(signIn);
+export default ctrlWrapper(login);

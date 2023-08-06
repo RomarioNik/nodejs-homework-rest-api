@@ -2,7 +2,7 @@ import { ctrlWrapper } from "../../decorators/index.js";
 import { HttpError } from "../../helpers/index.js";
 import { User } from "../../models/user.js";
 
-const subs = async (req, res) => {
+const subscription = async (req, res) => {
   const { _id } = req.user;
   const result = await User.findByIdAndUpdate(_id, req.body, {
     new: true,
@@ -11,4 +11,4 @@ const subs = async (req, res) => {
   res.json(result);
 };
 
-export const subscription = ctrlWrapper(subs);
+export default ctrlWrapper(subscription);

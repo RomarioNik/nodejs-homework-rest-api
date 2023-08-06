@@ -6,9 +6,10 @@ import {
   logout,
   current,
   subscription,
+  updateAvatar,
 } from "../../controllers/auth/index.js";
 import validateBody from "../../decorators/validateBody.js";
-import { authenticate } from "../../middlewares/index.js";
+import { authenticate, upload } from "../../middlewares/index.js";
 
 const usersRouter = express.Router();
 
@@ -25,6 +26,13 @@ usersRouter.patch(
   authenticate,
   validateBody(schemas.subscriptionSchema),
   subscription
+);
+
+usersRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  updateAvatar
 );
 
 export default usersRouter;

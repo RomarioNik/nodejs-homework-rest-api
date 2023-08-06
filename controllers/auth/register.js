@@ -1,9 +1,10 @@
 import bcrypt from "bcrypt";
+import garavatar from "gravatar";
 import { ctrlWrapper } from "../../decorators/index.js";
 import { HttpError } from "../../helpers/index.js";
 import { User } from "../../models/user.js";
 
-const signUp = async (req, res) => {
+const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.find({ email });
 
@@ -11,9 +12,12 @@ const signUp = async (req, res) => {
 
   const createHashPassword = await bcrypt.hash(password, 10);
 
+  const avatarURL = garavatar.url(email);
+
   const newUser = await User.create({
     ...req.body,
     password: createHashPassword,
+    avatarURL,
   });
 
   res.status(201).json({
@@ -24,4 +28,4 @@ const signUp = async (req, res) => {
   });
 };
 
-export const register = ctrlWrapper(signUp);
+export default ctrlWrapper(register);
