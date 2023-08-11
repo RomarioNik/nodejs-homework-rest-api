@@ -8,12 +8,24 @@ import {
   subscription,
   updateAvatar,
 } from "../../controllers/auth/index.js";
+import {
+  verifyEmail,
+  resendVerifyToken,
+} from "../../controllers/email/index.js";
 import validateBody from "../../decorators/validateBody.js";
 import { authenticate, upload } from "../../middlewares/index.js";
 
 const usersRouter = express.Router();
 
 usersRouter.post("/register", validateBody(schemas.registerSchema), register);
+
+usersRouter.get("/verify/:verificationToken", verifyEmail);
+
+usersRouter.post(
+  "/verify",
+  validateBody(schemas.emailScheme),
+  resendVerifyToken
+);
 
 usersRouter.post("/login", validateBody(schemas.loginSchema), login);
 
