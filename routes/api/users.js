@@ -7,9 +7,11 @@ import {
   current,
   subscription,
   updateAvatar,
+} from "../../controllers/auth/index.js";
+import {
   verifyEmail,
   resendVerifyToken,
-} from "../../controllers/auth/index.js";
+} from "../../controllers/email/index.js";
 import validateBody from "../../decorators/validateBody.js";
 import { authenticate, upload } from "../../middlewares/index.js";
 
